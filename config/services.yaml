@@ -19,6 +19,23 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+    App\EntityListener\:
+        resource: "../src/EntityListener/"
+        tags: ["doctrine.orm.entity_listener"]
+
+    App\Service\EmailService:
+        arguments:
+            $mailer: '@Symfony\Component\Mailer\Transport\TransportInterface'
+
+    App\Service\TokenGeneratorService:
+        autowire: true
+
+
+    App\Service\AuthenticationSuccessHandler:
+        arguments: [ '@router' ]
+
+    App\Service\JsonToStringTransformerService:
+        autowire: true
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

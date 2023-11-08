@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Matcha - Home{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="jumbotron">
+            <h1 class="display-4">Bienvenue sur Matcha</h1>
+            <p class="lead">Matcha is an application that will allow you to meet singles and why not find your soulmate !</p>
+            <hr class="my-4">
+            <p>If you have not yet registered, go to the registration page, otherwise log in.</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <a class="btn btn-primary btn-lg" href="{{ path('security.registration') }}" role="button">Registration</a>
+                    <a class="btn btn-primary btn-lg" href="{{ path('security.login') }}" role="button">Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
