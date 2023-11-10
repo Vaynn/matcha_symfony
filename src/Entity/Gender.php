@@ -7,8 +7,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: GenderRepository::class)]
+#[UniqueEntity('name')]
 class Gender
 {
     #[ORM\Id]
@@ -17,6 +20,8 @@ class Gender
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank()]
+    #[Assert\Length(min:1, max:100)]
     private ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'gender', targetEntity: User::class)]
@@ -26,6 +31,8 @@ class Gender
     private Collection $users_id;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\Length(max: 300)]
+    #[Assert\NotBlank()]
     private ?string $description = null;
 
     public function __construct()

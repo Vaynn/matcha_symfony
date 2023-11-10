@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Gender;
 use App\Entity\Image;
 use App\Entity\Sexuality;
+use App\Entity\Tag;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -26,19 +27,23 @@ class UserFixture extends Fixture implements DependentFixtureInterface
     {
         $genders = $manager->getRepository(Gender::class)->findAll();
         $sexualities = $manager->getRepository(Sexuality::class)->findAll();
+        $tags = $manager->getRepository(Tag::class)->findAll();
 
         for ($i = 0; $i < 100; $i++) {
             $gender = mt_rand(0, 1) == 1 ? $genders[1] : $genders[0];
             $sexuality = $sexualities[array_rand($sexualities)];
+            $hashtags = array_rand($tags, mt_rand(2, 20));
             $user = new User();
+            foreach ($hashtags as $hashtag){
+                $user->addTag($tags[$hashtag]);
+            }
             $user->setUsername($this->faker->unique()->word())
                 ->setEmail($this->faker->email())
-                ->setFirstName($this->faker->firstName($gender->getName()))
+                ->setFirstName($this->faker->firstName(lcfirst($gender->getName())))
                 ->setLastName($this->faker->lastName())
                 ->setGender($gender)
                 ->setSexuality($sexuality)
-                ->setBiography($this->faker->text(150))
-                ->setTags($this->faker->words(3))
+                ->setBiography($this->faker->text(199))
                 ->setFameRating(mt_rand(0, 5))
                 ->setRoles(['ROLE_USER'])
                 ->setAge(mt_rand(18, 99))
@@ -58,7 +63,8 @@ class UserFixture extends Fixture implements DependentFixtureInterface
     {
         return [
             GenderFixture::class,
-            SexualityFixture::class
+            SexualityFixture::class,
+            TagFixture::class
         ];
     }
 }

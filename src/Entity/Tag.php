@@ -2,35 +2,29 @@
 
 namespace App\Entity;
 
-use App\Repository\SexualityRepository;
+use App\Repository\TagRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: SexualityRepository::class)]
+#[ORM\Entity(repositoryClass: TagRepository::class)]
 #[UniqueEntity('name')]
-class Sexuality
+class Tag
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 50)]
     #[Assert\NotBlank()]
-    #[Assert\Length(min:1, max:100)]
+    #[Assert\Length(min:1, max:50)]
     private ?string $name = null;
 
-    #[ORM\OneToMany(mappedBy: 'sexuality', targetEntity: User::class)]
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'tags')]
     private Collection $users_id;
-
-    #[ORM\Column(type: Types::TEXT)]
-    #[Assert\Length(max: 300)]
-    #[Assert\NotBlank()]
-    private ?string $description = null;
 
     public function __construct()
     {
@@ -54,6 +48,10 @@ class Sexuality
         return $this;
     }
 
+    public function __toString(){
+        return $this->getName();
+    }
+
     /**
      * @return Collection<int, User>
      */
@@ -66,7 +64,7 @@ class Sexuality
     {
         if (!$this->users_id->contains($usersId)) {
             $this->users_id->add($usersId);
-            $usersId->setSexuality($this);
+            $usersId->addTag($this);
         }
 
         return $this;
@@ -75,28 +73,9 @@ class Sexuality
     public function removeUsersId(User $usersId): static
     {
         if ($this->users_id->removeElement($usersId)) {
-            // set the owning side to null (unless already changed)
-            if ($usersId->getSexuality() === $this) {
-                $usersId->setSexuality(null);
-            }
+            $usersId->removeTag($this);
         }
 
         return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): static
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    public function __toString(){
-        return $this->getName();
     }
 }

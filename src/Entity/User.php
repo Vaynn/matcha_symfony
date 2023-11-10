@@ -60,11 +60,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $isActive = false;
 
-
-
-    #[ORM\Column(type: Types::JSON, nullable: true)]
-    private ?array $tags = null;
-
     #[ORM\Column]
     #[Assert\NotNull()]
     private ?int $fame_rating = 0;
@@ -103,6 +98,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'users_id')]
     private ?Sexuality $sexuality = null;
 
+    #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'users_id')]
+    private Collection $tags;
+
 
 
     public function __construct()
@@ -110,6 +108,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->likedUser = new ArrayCollection();
         $this->likes = new ArrayCollection();
         $this->images = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
 
 
@@ -213,21 +212,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
-
-
-    public function getTags(): ?array
-    {
-        return $this->tags;
-    }
-
-    public function setTags(?array $tags): static
-    {
-        $this->tags = $tags;
-
-        return $this;
-    }
-
 
     public function getFameRating(): ?int
     {
@@ -440,6 +424,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setSexuality(?Sexuality $sexuality): static
     {
         $this->sexuality = $sexuality;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Tag>
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(Tag $tag): static
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
+        }
+
+        return $this;
+    }
+
+    public function removeTag(Tag $tag): static
+    {
+        $this->tags->removeElement($tag);
 
         return $this;
     }
