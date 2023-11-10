@@ -18,7 +18,7 @@
                                 Gender:
                             </div>
                             <div class="col-md-1">
-                                <span class="badge bg-primary">{{ user.gender }}</span>
+                                <span class="badge bg-primary">{{ user.gender.name }}</span>
                             </div>
                         </div>
                     </li>
@@ -28,7 +28,7 @@
                             Sexuality:
                         </div>
                         <div class="col-md-1">
-                            <span class="badge bg-primary">{{ user.sexuality }}</span>
+                            <span class="badge bg-primary">{{ user.sexuality.name }}</span>
                         </div>
                     </div>
                 </li>
@@ -39,7 +39,7 @@
                         </div>
                         {% for tag in user.tags  %}
                             <div class="col-md-1">
-                                <span class="badge bg-primary float-end">#{{ tag }}</span>
+                                <span class="badge bg-primary">#{{ tag }}</span>
                             </div>
                         {% endfor %}
 

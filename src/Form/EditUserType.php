@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\User;
+use App\Repository\GenderRepository;
+use App\Repository\SexualityRepository;
 use App\Service\JsonToStringTransformerService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -19,13 +21,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class EditUserType extends AbstractType
 {
+    private $genderRepository;
+    private $sexualityRepository;
     public function __construct(
         private JsonToStringTransformerService $transformer,
+        GenderRepository $genderRepository,
+        SexualityRepository $sexualityRepository,
     ){
-
+        $this->genderRepository = $genderRepository;
+        $this->sexualityRepository = $sexualityRepository;
     }
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $user = $options['data'] ?? null;
         $builder
             ->add('username', TextType::class, [
                 'attr' => [
@@ -108,31 +116,28 @@ class EditUserType extends AbstractType
                     )]
             ])
             ->add('gender', ChoiceType::class, [
-                'choices' => [
-                    'Male' => 'Male',
-                    'Female' => 'Female'
-                ],
+                'choices' => $this->getGenderChoices(),
                 'attr' => [
                     'class' => 'form-select',
                 ],
                 'label' => 'Gender',
                 'label_attr' => [
                     'class' => 'form-label mt-4'
-                ]
+                ],
+                'placeholder' => '---',
+                'data' => $user ? $user->getGender()->getId() : null
             ])
             ->add('sexuality', ChoiceType::class, [
-                'choices' => [
-                    'Hetero' => 'hetero',
-                    'Homo' => 'homo',
-                    'Bi' => 'bi'
-                ],
+                'choices' => $this->getSexualityChoices(),
                 'attr' => [
                     'class' => 'form-select',
                 ],
                 'label' => 'Sexuality',
                 'label_attr' => [
                     'class' => 'form-label mt-4'
-                ]
+                ],
+                'placeholder' => '---',
+                'data' => $user ? $user->getSexuality()->getId() : null
             ])
             ->add('tags', TextType::class, [
                 'attr' => [
@@ -180,5 +185,23 @@ class EditUserType extends AbstractType
         $resolver->setDefaults([
             'data_class' => User::class,
         ]);
+    }
+
+    private function getGenderChoices(){
+        $genders = $this->genderRepository->findAll();
+        $choices = [];
+        foreach ($genders as $gender){
+            $choices[$gender->getName()] = $gender->getId();
+        }
+        return $choices;
+    }
+
+    private function getSexualityChoices(){
+        $sexualities = $this->sexualityRepository->findAll();
+        $choices = [];
+        foreach ($sexualities as $sexuality){
+            $choices[$sexuality->getName()] = $sexuality->getId();
+        }
+        return $choices;
     }
 }

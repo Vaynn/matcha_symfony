@@ -60,13 +60,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $isActive = false;
 
-    #[ORM\Column(length: 50, nullable: true)]
-    #[Assert\Length(min: 2, max: 50)]
-    private ?string $gender = null;
 
-    #[ORM\Column(length: 50, nullable: true)]
-    #[Assert\Length(min: 2, max: 50)]
-    private ?string $sexuality = null;
 
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $tags = null;
@@ -102,6 +96,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Length(max: 255)]
     private ?string $tokenActivation = null;
+
+    #[ORM\ManyToOne(inversedBy: 'users_id')]
+    private ?Gender $gender = null;
+
+    #[ORM\ManyToOne(inversedBy: 'users_id')]
+    private ?Sexuality $sexuality = null;
+
+
 
     public function __construct()
     {
@@ -212,29 +214,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getGender(): ?string
-    {
-        return $this->gender;
-    }
 
-    public function setGender(?string $gender): static
-    {
-        $this->gender = $gender;
-
-        return $this;
-    }
-
-    public function getSexuality(): ?string
-    {
-        return $this->sexuality;
-    }
-
-    public function setSexuality(string $sexuality): static
-    {
-        $this->sexuality = $sexuality;
-
-        return $this;
-    }
 
     public function getTags(): ?array
     {
@@ -436,6 +416,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setTokenActivation(?string $tokenActivation): static
     {
         $this->tokenActivation = $tokenActivation;
+
+        return $this;
+    }
+
+    public function getGender(): ?Gender
+    {
+        return $this->gender;
+    }
+
+    public function setGender(?Gender $gender): static
+    {
+        $this->gender = $gender;
+
+        return $this;
+    }
+
+    public function getSexuality(): ?Sexuality
+    {
+        return $this->sexuality;
+    }
+
+    public function setSexuality(?Sexuality $sexuality): static
+    {
+        $this->sexuality = $sexuality;
 
         return $this;
     }
