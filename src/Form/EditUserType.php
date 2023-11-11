@@ -148,8 +148,14 @@ class EditUserType extends AbstractType
                 'multiple' => true,
                 'label' => 'Tags',
                 'label_attr' => [
-                    'class' => 'form-label mt-4'
+                    'class' => 'form-check-label mt-4'
                 ],
+                'attr' =>[
+                    'class' => 'form-check-inline'
+                ],
+                'choice_attr' => function ($choice, $key, $value) {
+                    return ['class' => 'form-check-input'];
+                },
                 'data'=> $this->getUserTags($user)
             ])
             ->add('biography', TextareaType::class, [
@@ -213,7 +219,6 @@ class EditUserType extends AbstractType
     private function getUserTags($user){
         if ($user){
             $toto = $user->getTags() ? $user->getTags()->map(fn($tag) => $tag->getId())->toArray() : [''];
-            var_dump($toto);
             return $toto;
         }
         return [''];

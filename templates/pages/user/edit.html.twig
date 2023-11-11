@@ -5,7 +5,34 @@
 {% block body %}
     <div class="container">
         <h1>Edit Your Profile</h1>
-        {{ form(form) }}
+        {{ form_start(form) }}
+
+        {{ form_row(form.username) }}
+        {{ form_row(form.lastName) }}
+        {{ form_row(form.firstName) }}
+        {{ form_row(form.email) }}
+        {{ form_row(form.age) }}
+        {{ form_row(form.gender) }}
+        {{ form_row(form.sexuality) }}
+        <div class="row">
+            <div class="form-group">
+                <div class="col-md-2">
+                    <label class="form-label mt-4">Tags</label>
+                </div>
+                <div class="col-md-10 d-flex flex-wrap align-items-center">
+                    {% for tag in form.tags %}
+                        <div class="form-check form-check-inline">
+                            {{ form_widget(tag, {'attr': {'class': 'form-check-input'}}) }}
+                            {{ form_label(tag, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+
+        {{ form_row(form.biography) }}
+        {{ form_end(form) }}
 
     </div>
 
