@@ -5,7 +5,7 @@ namespace App\Form;
 use App\Entity\User;
 use App\Repository\GenderRepository;
 use App\Repository\SexualityRepository;
-use App\Service\JsonToStringTransformerService;
+use App\Repository\TagRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -23,13 +23,16 @@ class EditUserType extends AbstractType
 {
     private $genderRepository;
     private $sexualityRepository;
+
+    private $tagRepository;
     public function __construct(
-        private JsonToStringTransformerService $transformer,
         GenderRepository $genderRepository,
         SexualityRepository $sexualityRepository,
+        TagRepository $tagRepository
     ){
         $this->genderRepository = $genderRepository;
         $this->sexualityRepository = $sexualityRepository;
+        $this->tagRepository = $tagRepository;
     }
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -139,21 +142,15 @@ class EditUserType extends AbstractType
                 'placeholder' => '---',
                 'data' => $user ? $user->getSexuality()->getId() : null
             ])
-            ->add('tags', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'minlength' => '2',
-                    'maxlength' => '300',
-                ],
+            ->add('tags', ChoiceType::class, [
+                'choices'=> $this->getTagChoices(),
+                'expanded' => true,
+                'multiple' => true,
                 'label' => 'Tags',
                 'label_attr' => [
                     'class' => 'form-label mt-4'
                 ],
-                'help' => 'Each tag must be separate with a coma(exemple1,exemple2,exemple2)',
-                'constraints' => [
-                    new Assert\Length(['min' => 2, 'max' => 180]),
-                ],
-
+                'data'=> $this->getUserTags($user)
             ])
             ->add('biography', TextareaType::class, [
                 'attr' => [
@@ -175,8 +172,7 @@ class EditUserType extends AbstractType
                     'class' => 'btn btn-primary mt-4'
                 ]
             ])
-            ->get('tags')
-            ->addModelTransformer($this->transformer)
+
         ;
     }
 
@@ -203,5 +199,23 @@ class EditUserType extends AbstractType
             $choices[$sexuality->getName()] = $sexuality->getId();
         }
         return $choices;
+    }
+
+    private function getTagChoices(){
+        $tags = $this->tagRepository->findAll();
+        $choices = [];
+        foreach ($tags as $tag){
+            $choices[$tag->getName()] = $tag->getId();
+        }
+        return $choices;
+    }
+
+    private function getUserTags($user){
+        if ($user){
+            $toto = $user->getTags() ? $user->getTags()->map(fn($tag) => $tag->getId())->toArray() : [''];
+            var_dump($toto);
+            return $toto;
+        }
+        return [''];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Tag;
 use App\Entity\User;
 use App\Form\EditUserType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -32,7 +33,6 @@ class UserController extends AbstractController
         if (!$this->getUser()){
             return $this->redirectToRoute('security.login');
         }
-
         $form = $this->createForm(EditUserType::class, $user);
 
         return $this->render('pages/user/edit.html.twig', [
