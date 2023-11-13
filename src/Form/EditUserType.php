@@ -2,10 +2,14 @@
 
 namespace App\Form;
 
+use App\Entity\Gender;
+use App\Entity\Sexuality;
+use App\Entity\Tag;
 use App\Entity\User;
 use App\Repository\GenderRepository;
 use App\Repository\SexualityRepository;
 use App\Repository\TagRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -41,7 +45,7 @@ class EditUserType extends AbstractType
             ->add('username', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'disabled' => 'disabled',
+                    'readonly' => 'readonly',
                     'minlength' => '2',
                     'maxlength' => '180',
                 ],
@@ -118,8 +122,10 @@ class EditUserType extends AbstractType
                         max: 110
                     )]
             ])
-            ->add('gender', ChoiceType::class, [
-                'choices' => $this->getGenderChoices(),
+            ->add('gender', EntityType::class, [
+                'class' => Gender::class,
+                'choice_label' => 'name',
+                'choices' => $this->genderRepository->findAll(),
                 'attr' => [
                     'class' => 'form-select',
                 ],
@@ -128,10 +134,12 @@ class EditUserType extends AbstractType
                     'class' => 'form-label mt-4'
                 ],
                 'placeholder' => '---',
-                'data' => $user ? $user->getGender()->getId() : null
+                'data' => $user ? $user->getGender() : null
             ])
-            ->add('sexuality', ChoiceType::class, [
-                'choices' => $this->getSexualityChoices(),
+            ->add('sexuality', EntityType::class, [
+                'class' => Sexuality::class,
+                'choice_label' => 'name',
+                'choices' => $this->sexualityRepository->findAll(),
                 'attr' => [
                     'class' => 'form-select',
                 ],
@@ -140,10 +148,12 @@ class EditUserType extends AbstractType
                     'class' => 'form-label mt-4'
                 ],
                 'placeholder' => '---',
-                'data' => $user ? $user->getSexuality()->getId() : null
+                'data' => $user ? $user->getSexuality() : null
             ])
-            ->add('tags', ChoiceType::class, [
-                'choices'=> $this->getTagChoices(),
+            ->add('tags', EntityType::class, [
+                'class' => Tag::class,
+                'choice_label' => 'name',
+                'choices'=> $this->tagRepository->findAll(),
                 'expanded' => true,
                 'multiple' => true,
                 'label' => 'Tags',
@@ -156,7 +166,7 @@ class EditUserType extends AbstractType
                 'choice_attr' => function ($choice, $key, $value) {
                     return ['class' => 'form-check-input'];
                 },
-                'data'=> $this->getUserTags($user)
+                'data'=> $user ? $user->getTags() : ['']
             ])
             ->add('biography', TextareaType::class, [
                 'attr' => [
@@ -167,11 +177,13 @@ class EditUserType extends AbstractType
                 'label_attr' => [
                     'class' => 'form-label mt-4'
                 ],
+                'required' => false,
                 'constraints' => [
                     new Assert\Length(
                         max: 300,
                         maxMessage: 'Your biography must contains 300 characters max.'
-                    )]
+                    ),
+                    ]
             ])
             ->add('Edit', SubmitType::class, [
                 'attr' => [

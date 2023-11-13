@@ -53,16 +53,25 @@
                 {% for image in user.getImages() %}
                   <img class="w-25 p-3" src="{{ asset('/images/users/' ~ image.name ~ '.png')}}">
                 {% endfor %}
+                <div>
+                    {% set routeName = 'user.edit.photos' %}
+                    {% set routeUrl = path(routeName, {'id' : user.id}) %}
+                    <a href="{{ routeUrl }}" class="card-link"><button type="button" class="btn btn-primary btn-sm">Manage your photos</button></a>
+                </div>
             </div>
             <div class="card-body">
                 <h3>About Me</h3>
-                <p class="card-text">{{ user.biography }}</p>
+                {% if app.request.get('id') == user.id and user.biography != null %}
+                    <p class="card-text">{{ user.biography }}</p>
+                {% else %}
+                    <p class="card-text">Craft your own story. Pen a few lines about what makes your heart race and captivate the interest of fellow members.</p>
+                {% endif %}
             </div>
             {%  if app.request.get('id') == user.id %}
                 <div class="card-body">
                     {% set routeName = 'user.edit' %}
                     {% set routeUrl = path(routeName, {'id' : user.id}) %}
-                    <button type="button" class="btn btn-primary"><a href="{{ routeUrl }}" class="card-link">Edit</a></button>
+                    <a href="{{ routeUrl }}" class="card-link"><button type="button" class="btn btn-primary">Edit</button></a>
                 </div>
             {% endif %}
         </div>

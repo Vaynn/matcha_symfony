@@ -56,7 +56,7 @@ class Image
         return $this;
     }
 
-    public function isIsProfileImage(): ?bool
+    public function getIsProfileImage(): ?bool
     {
         return $this->is_profile_image;
     }

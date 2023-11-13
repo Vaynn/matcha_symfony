@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Matcha - Manage photos{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <div>
+            <h1>Manage  your photos</h1>
+        </div>
+        <div class="row">
+
+        {% for image in user.getImages() %}
+            <div class="col-md-4">
+                <div class="card border-primary mb-3" style="max-width: 20rem;">
+                    <div class="card-header">
+                        {%if not image.getIsProfileImage()%}
+                            Photo {{ loop.index }}
+                        {% else %}
+                            Profile's picture
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <img class="img-fluid" alt="image" style="height: 200px;" src="{{ asset('/images/users/' ~ image.getName() ~ '.png')}}">
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+        {{ form(form) }}
+    </div>
+{% endblock %}
