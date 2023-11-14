@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
@@ -24,7 +25,7 @@ class EditUserPhotosType extends AbstractType
                     'class' => 'form-label mt-4'
                 ],
                 'mapped' => false,
-                'required' => false,
+                'required' => true,
 
                 'constraints' => [
                     new File([
@@ -38,7 +39,12 @@ class EditUserPhotosType extends AbstractType
                     ])
                 ],
             ])
-        ;
+            ->add('Download', SubmitType::class, [
+                'attr' => [
+                    'class' => 'btn btn-primary mt-4'
+                ]
+            ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void

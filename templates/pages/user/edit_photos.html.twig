@@ -20,8 +20,13 @@
                             Profile's picture
                         {% endif %}
                     </div>
-                    <div class="card-body">
-                        <img class="img-fluid" alt="image" style="height: 200px;" src="{{ asset('/images/users/' ~ image.getName() ~ '.png')}}">
+                    <div class="card-body d-flex justify-content-center align-items-center">
+                        <img class="img-fluid" alt="{{ image.name }}" style="height: 200px;" src="{{ asset('/images/users/' ~ image.getName() )}}">
+                    </div>
+                    <div>
+                        {% set routeName = 'user.delete.photo' %}
+                        {% set routeUrl = path(routeName, {'photoId' : image.id()}) %}
+                        <a href="{{ routeUrl }}"><button class="btn btn-primary btn-group-sm"><i class="fa-solid fa-trash-can fa-sm"></i></button></a>
                     </div>
                 </div>
             </div>

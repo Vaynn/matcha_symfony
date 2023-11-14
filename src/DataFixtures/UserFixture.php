@@ -49,7 +49,7 @@ class UserFixture extends Fixture implements DependentFixtureInterface
                 ->setAge(mt_rand(18, 99))
                 ->setPlainPassword('password');
             $image = new Image();
-            $image->setName($user->getGender()->getName() === "Male" ? "male/" . $i : "female/" . $i)
+            $image->setName($user->getGender()->getName() === "Male" ? "male/" . $i . '.png' : "female/" . $i . '.png')
                 ->setUserId($user)
                 ->setIsProfileImage(true);
             $manager->persist($user);

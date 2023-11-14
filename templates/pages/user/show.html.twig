@@ -51,7 +51,7 @@
             <div class="card-body">
                 <h3>Gallery</h3>
                 {% for image in user.getImages() %}
-                  <img class="w-25 p-3" src="{{ asset('/images/users/' ~ image.name ~ '.png')}}">
+                  <img class="w-25 p-3" src="{{ asset('/images/users/' ~ image.name)}}">
                 {% endfor %}
                 <div>
                     {% set routeName = 'user.edit.photos' %}
