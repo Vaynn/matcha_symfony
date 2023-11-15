@@ -88,7 +88,7 @@ class UserController extends AbstractController
     }
 
     #[Route('user/delete/photo/{photoId}', name: 'user.delete.photo', methods: ['GET', 'DELETE']) ]
-    public function deletePhotos(Request $request, EntityManagerInterface $manager, FileSystem $filesystem){
+    public function deletePhoto(Request $request, EntityManagerInterface $manager, FileSystem $filesystem){
         if (!$this->getUser()){
             return $this->redirectToRoute('security.login');
         }
@@ -99,7 +99,26 @@ class UserController extends AbstractController
         $manager->flush();
         $imageDir = $this->getParameter('photos_directory');
         $filesystem->remove($imageDir . $imageName);
-        var_dump($request->getUser());
+        return $this->redirectToRoute('user.edit.photos', parameters: ['id' => $this->getUser()->getId()]);
+
+    }
+    #[Route('user/update/photo/{photoId}', name: 'user.update.photo', methods: ['GET', 'POST']) ]
+    public function updatePhoto(Request $request, EntityManagerInterface $manager){
+        if (!$this->getUser()){
+            return $this->redirectToRoute('security.login');
+        }
+        $imageId = $request->attributes->get('photoId');
+        $newImageProfile = $manager->getRepository(Image::class)->find($imageId);
+        $previousImageProfile = $manager->getRepository(Image::class)->findOneBy([
+            'is_profile_image' => true,
+            'user_id'=>$this->getUser()->getId()]);
+        $newImageProfile->setIsProfileImage(true);
+        if ($previousImageProfile){
+            $previousImageProfile->setIsProfileImage(false);
+            $manager->persist($previousImageProfile);
+        }
+        $manager->persist($newImageProfile);
+        $manager->flush();
         return $this->redirectToRoute('user.edit.photos', parameters: ['id' => $this->getUser()->getId()]);
 
     }
