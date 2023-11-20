@@ -24,4 +24,17 @@
 
             $this->mailer->send($email);
         }
+
+        public function sendChangePwdEmail(string $to, string $token, string $username): void
+        {
+            $email = (new Email())
+                ->to($to)
+                ->subject('Change Password')
+                ->html('
+                    <p>Please click on the following link to choose a new password.</p>
+                    <a href="http://localhost:8000/update/password?token=' . $token . '&username=' . $username . '">Click here</a>'
+                );
+
+            $this->mailer->send($email);
+        }
     }

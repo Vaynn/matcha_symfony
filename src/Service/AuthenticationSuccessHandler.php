@@ -19,7 +19,6 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
     public function onAuthenticationSuccess(Request $request, TokenInterface $token): ?Response
     {
         $id = $token->getUser()->getId();
-        var_dump($id);
         $url = $this->router->generate('user.show', ['id' => $id]);
         return new RedirectResponse($url);
     }

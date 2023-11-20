@@ -2,17 +2,51 @@
 
 {% block title %}Matcha - Home{% endblock %}
 
+{% set include_header = false %}
+
 {% block body %}
     <div class="container mt-4">
         <div class="jumbotron">
-            <h1 class="display-4">Bienvenue sur Matcha</h1>
-            <p class="lead">Matcha is an application that will allow you to meet singles and why not find your soulmate !</p>
+            <h1 class="display-4">Welcome to <span class="matchaRose">Matcha</span> - Where Every Love Story is Celebrated!</h1>
+            <div class="lead">
+                <section>
+                    <h2 class="matchaRose">Why Matcha?</h2>
+                    <ul style="list-style-type: none;">
+                        <li>🌈 <strong>Inclusivity at the Core:</strong> Matcha celebrates diversity. No matter who you are, we welcome you with warmth and respect.</li>
+                        <li>💖 <strong class="matchaRose">Authentic Connections:</strong> Connect with genuine individuals who share your values and vision of love.</li>
+                        <li>🌐 <strong>Open to All Stories:</strong> Whether you're seeking traditional love or a unique connection, Matcha is where all love stories can thrive.</li>
+                        <li>🔒 <strong class="matchaRose">A Secure Space:</strong> Your safety and comfort are our priority. Matcha provides a secure environment for all interactions.</li>
+                    </ul>
+                </section>
+
+            </div>
             <hr class="my-4">
-            <p>If you have not yet registered, go to the registration page, otherwise log in.</p>
+            <section>
+                <h2 class="matchaRose">How It Works?</h2>
+                <div class="lead">
+
+                <ol>
+                    <li><strong>Simple and Quick Sign-Up:</strong> Create your profile in a few clicks to start your journey.</li>
+                    <li><strong class="matchaRose">Customize Your Preferences:</strong> Define your search criteria for matches that resonate with you.</li>
+                    <li><strong>Communicate with Confidence:</strong> Exchange messages in a secure and friendly space.</li>
+                    <li><strong class="matchaRose">Meet In Person:</strong> When you feel ready, transition from virtual to real-life connections.</li>
+                </ol>
+                </div>
+            </section>
+            <section>
+                <h5>Join Matcha today and explore a world of inclusivity where every love story is celebrated.</h5>
+                <hr>
+            </section>
             <div class="row">
                 <div class="col-md-6">
-                    <a class="btn btn-primary btn-lg" href="{{ path('security.registration') }}" role="button">Registration</a>
+                    <a class="btn btn-primary btn-lg" href="{{ path('security.registration') }}" role="button">Sign Up</a>
+                    or
                     <a class="btn btn-primary btn-lg" href="{{ path('security.login') }}" role="button">Login</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <a href="{{ path('security.new.password') }}"><p>Forget password ?</p></a>
                 </div>
             </div>
         </div>

@@ -3,6 +3,7 @@
 namespace App\EntityListener;
 
 use App\Entity\User;
+use Doctrine\ORM\Event\PreFlushEventArgs;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserListener
@@ -17,6 +18,10 @@ class UserListener
     }
 
     public function preUpdate(User $user){
+        $this->encodePassword($user);
+    }
+
+    public function preFlush($user, PreFlushEventArgs $args){
         $this->encodePassword($user);
     }
 

@@ -2,6 +2,8 @@
 
 {% block title %}Matcha - Connexion{% endblock %}
 
+{% set include_header = false %}
+
 {% block body %}
     <div class="container">
         {% if error %}
@@ -14,7 +16,10 @@
         {% endfor %}
     <form action="{{ path('security.login') }}" method="post">
         <fieldset>
-            <legend>Matcha - Connexion Form</legend>
+            <h1><span class="matchaRose">Matcha</span> - Login</h1>
+            <legend>Love is in the air! 💘<br>
+                Dive into the world of romance by logging into your account.<br>
+                Your next exciting connection is just a click away.</legend>
             <div class="form-group">
                 <label for="username" class="form-label mt-4">Username</label>
                 <input type="text" class="form-control" id="username" name="_username" placeholder="Enter username" value="{{ last_username }}">

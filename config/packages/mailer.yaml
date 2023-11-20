@@ -3,3 +3,9 @@ framework:
         dsn: '%env(MAILER_DSN)%'
         headers:
             From: 'yvmartor@student.42lyon.fr'
+
+when@dev:
+    framework:
+        mailer:
+            envelope:
+                recipients: ['antaares@hotmail.fr']

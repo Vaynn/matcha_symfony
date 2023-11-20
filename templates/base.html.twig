@@ -8,6 +8,7 @@
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
             <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
+            <link rel="stylesheet" type="text/css" href="{{ asset('css/styles.css') }}">
 
         {% endblock %}
 
@@ -17,9 +18,11 @@
         {% endblock %}
     </head>
     <body>
-    {% block header %}
-        {% include "partials/_header.html.twig" %}
-    {% endblock %}
+    {% if include_header is not defined or include_header%}
+        {% block header %}
+            {% include "partials/_header.html.twig" %}
+        {% endblock %}
+    {% endif %}
         {% block body %}
 
         {% endblock %}
