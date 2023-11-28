@@ -101,6 +101,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'users_id')]
     private Collection $tags;
 
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Preferences $preferences = null;
+
 
 
     public function __construct()
@@ -448,6 +451,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeTag(Tag $tag): static
     {
         $this->tags->removeElement($tag);
+
+        return $this;
+    }
+
+    public function getPreferences(): ?Preferences
+    {
+        return $this->preferences;
+    }
+
+    public function setPreferences(?Preferences $preferences): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($preferences === null && $this->preferences !== null) {
+            $this->preferences->setUser(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($preferences !== null && $preferences->getUser() !== $this) {
+            $preferences->setUser($this);
+        }
+
+        $this->preferences = $preferences;
 
         return $this;
     }

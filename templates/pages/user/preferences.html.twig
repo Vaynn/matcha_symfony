@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Matcha - Select Your Preferences{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="matchaRose">Matcha</h1>
+        <h2>Select Your Preferences</h2>
+        <p>Enhance your experience by customizing your search preferences.
+            Fine-tune your matches based on your personal criteria, whether you're looking for your ideal partner,
+            exploring new connections, or meeting individuals who share your interests.
+            Choose your preferences below and let us help you create meaningful connections
+        </p>
+        <hr>
+        {{ form_start(form) }}
+
+        {{ form_row(form.min_age) }}
+        {{ form_row(form.max_age) }}
+
+        <div class="row">
+            <div class="form-group">
+                <div class="col-md-6">
+                    <label class="form-label matchaRose mt-4">Select Your Preferred Sexualities</label>
+                </div>
+                <div class="col-md-10 d-flex flex-wrap align-items-center">
+                    {% for sexuality in form.sexualities %}
+                        <div class="form-check form-check-inline">
+                            {{ form_widget(sexuality, {'attr': {'class': 'form-check-input'}}) }}
+                            {{ form_label(sexuality, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    <div class="row">
+        <div class="form-group">
+            <div class="col-md-6">
+                <label class="form-label matchaRose mt-4">Select Your Preferred Genders</label>
+            </div>
+            <div class="col-md-10 d-flex flex-wrap align-items-center">
+                {% for gender in form.genders %}
+                    <div class="form-check form-check-inline">
+                        {{ form_widget(gender, {'attr': {'class': 'form-check-input'}}) }}
+                        {{ form_label(gender, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    <div class="row">
+        <div class="form-group">
+            <div class="col-md-6">
+                <label class="form-label matchaRose mt-4">Select Your Preferred Sexualities</label>
+            </div>
+            <div class="col-md-10 d-flex flex-wrap align-items-center">
+                {% for tag in form.tags %}
+                    <div class="form-check form-check-inline">
+                        {{ form_widget(tag, {'attr': {'class': 'form-check-input'}}) }}
+                        {{ form_label(tag, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {{ form_end(form) }}
+    </div>
+    </div>
+{% endblock %}

@@ -35,10 +35,14 @@ class Gender
     #[Assert\NotBlank()]
     private ?string $description = null;
 
+    #[ORM\ManyToMany(targetEntity: Preferences::class, mappedBy: 'genders')]
+    private Collection $preferences_id;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
         $this->users_id = new ArrayCollection();
+        $this->preferences_id = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -132,5 +136,32 @@ class Gender
 
     public function __toString(){
         return $this->getName();
+    }
+
+    /**
+     * @return Collection<int, Preferences>
+     */
+    public function getPreferencesId(): Collection
+    {
+        return $this->preferences_id;
+    }
+
+    public function addPreferencesId(Preferences $preferencesId): static
+    {
+        if (!$this->preferences_id->contains($preferencesId)) {
+            $this->preferences_id->add($preferencesId);
+            $preferencesId->addGender($this);
+        }
+
+        return $this;
+    }
+
+    public function removePreferencesId(Preferences $preferencesId): static
+    {
+        if ($this->preferences_id->removeElement($preferencesId)) {
+            $preferencesId->removeGender($this);
+        }
+
+        return $this;
     }
 }

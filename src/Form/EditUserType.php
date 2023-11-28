@@ -108,7 +108,7 @@ class EditUserType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'min' => '18',
-                    'max' => '110'
+                    'max' => '99'
 
                 ],
                 'label' => 'Age',

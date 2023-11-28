@@ -26,9 +26,13 @@ class Tag
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'tags')]
     private Collection $users_id;
 
+    #[ORM\ManyToMany(targetEntity: Preferences::class, mappedBy: 'tags')]
+    private Collection $preferences_id;
+
     public function __construct()
     {
         $this->users_id = new ArrayCollection();
+        $this->preferences_id = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -74,6 +78,33 @@ class Tag
     {
         if ($this->users_id->removeElement($usersId)) {
             $usersId->removeTag($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Preferences>
+     */
+    public function getPreferencesId(): Collection
+    {
+        return $this->preferences_id;
+    }
+
+    public function addPreferencesId(Preferences $preferencesId): static
+    {
+        if (!$this->preferences_id->contains($preferencesId)) {
+            $this->preferences_id->add($preferencesId);
+            $preferencesId->addTag($this);
+        }
+
+        return $this;
+    }
+
+    public function removePreferencesId(Preferences $preferencesId): static
+    {
+        if ($this->preferences_id->removeElement($preferencesId)) {
+            $preferencesId->removeTag($this);
         }
 
         return $this;

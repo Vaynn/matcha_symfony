@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Image;
+use App\Entity\Preferences;
 use App\Entity\Tag;
 use App\Entity\User;
 use App\Form\EditUserPhotosType;
 use App\Form\EditUserType;
+use App\Form\PreferenceType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
@@ -121,5 +123,18 @@ class UserController extends AbstractController
         $manager->flush();
         return $this->redirectToRoute('user.edit.photos', parameters: ['id' => $this->getUser()->getId()]);
 
+    }
+
+    #[Route('user/update/preferences/{id}', name: 'user.update.preferences', methods: ['GET', 'POST'])]
+    public function updatePreferences(Request $request, EntityManagerInterface $manager, User $user){
+        if (!$this->getUser()){
+            return $this->redirectToRoute('security.login');
+        }
+        $preferences = $user->getPreferences() ? $user->getPreferences() : new Preferences();
+        $form = $this->createForm(PreferenceType::class, $preferences);
+        return $this->render('pages/user/preferences.html.twig',
+        [
+            'form' => $form->createView()
+        ]);
     }
 }
