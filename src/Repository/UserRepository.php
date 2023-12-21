@@ -2,9 +2,16 @@
 
 namespace App\Repository;
 
+use App\Entity\Gender;
+use App\Entity\Preferences;
+use App\Entity\Sexuality;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query\Parameter;
 use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -21,9 +28,14 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
-    public function __construct(ManagerRegistry $registry)
+    private $registry;
+    private $paginator;
+    public function __construct(ManagerRegistry $registry, PaginatorInterface $paginator)
     {
         parent::__construct($registry, User::class);
+        $this->registry = $registry;
+        $this->paginator = $paginator;
+
     }
 
     /**
@@ -38,6 +50,54 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $user->setPassword($newHashedPassword);
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
+    }
+
+    public function findByPreferences(Preferences $preferences, Request $request){
+        if (!$preferences->getGenders()->toArray()){
+            $genderRepository = $this->registry->getRepository(Gender::class);
+            $genders = $genderRepository->findAll();
+        }
+        else
+            $genders = $preferences->getGenders()->toArray();
+        if (!$preferences->getSexualities()->toArray()){
+            $sexualityRepository = $this->registry->getRepository(Sexuality::class);
+            $sexualities = $sexualityRepository->findAll();
+        }
+        else
+            $sexualities = $preferences->getSexualities()->toArray();
+        $qb = $this->createQueryBuilder('u')
+            ->where('u.age >= :min_age')
+            ->andWhere('u.age <= :max_age')
+            ->andWhere('u.gender IN (:genders)')
+            ->andWhere('u.sexuality IN (:sexualities)')
+            ->setParameters([
+                'min_age' => $preferences->getMinAge(),
+                'max_age'=> $preferences->getMaxAge(),
+                'genders'=> $genders,
+                'sexualities'=> $sexualities
+            ]);
+        $query = $qb->getQuery();
+        $pagination = $this->paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            9
+        );
+        return $pagination;
+
+    }
+
+    public function findAllExceptCurrentUser($currentUserId, Request $request){
+        $qb = $this->createQueryBuilder('u')
+            ->where('u.id != :currentUserId')
+            ->setParameter('currentUserId', $currentUserId);
+        $query = $qb->getQuery();
+        $pagination = $this->paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            9
+        );
+        return $pagination;
+
     }
 
 //    /**

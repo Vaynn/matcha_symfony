@@ -7,7 +7,7 @@
         <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#" ><i class="fa-solid fa-puzzle-piece"> Search</i>
+                    <a class="nav-link" href="#" ><i class="fa-solid fa-puzzle-piece"> Explore</i>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -21,9 +21,15 @@
                         <i class="fa-solid fa-rainbow"></i> Profile
                     </a>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"><i class="fa-regular fa-pen-to-square"></i> Edit Profile</a>
-                        <a class="dropdown-item" href="#"><i class="fa-solid fa-camera-retro"></i> Manage Photos</a>
-                        <a class="dropdown-item" href="#"><i class="fa-solid fa-heart-pulse"></i> Love Filters</a>
+                        {% set routeName = 'user.edit' %}
+                        {% set routeUrl = path(routeName, {'id' : user.id}) %}
+                        <a class="dropdown-item" href="{{ routeUrl }}"><i class="fa-regular fa-pen-to-square"></i> Edit Profile</a>
+                        {% set routeName = 'user.edit.photos' %}
+                        {% set routeUrl = path(routeName, {'id' : user.id}) %}
+                        <a class="dropdown-item" href="{{ routeUrl }}"><i class="fa-solid fa-camera-retro"></i> Manage Photos</a>
+                        {% set routeName = 'user.update.preferences' %}
+                        {% set routeUrl = path(routeName, {'id' : user.id}) %}
+                        <a class="dropdown-item" href="{{ routeUrl }}"><i class="fa-solid fa-heart-pulse"></i> Love Filters</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ path('security.logout') }}"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
                     </div>

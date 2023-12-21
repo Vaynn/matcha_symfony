@@ -27,7 +27,10 @@ class UserController extends AbstractController
             return $this->redirectToRoute('security.login');
         }
         if($this->getUser() !== $user){
-            return $this->redirectToRoute('home.index');
+            return $this->render('pages/user/show.others.html.twig', [
+                'controller_name' => 'UserController',
+                'user' => $user
+            ]);
         }
         return $this->render('pages/user/show.html.twig', [
             'controller_name' => 'UserController',
@@ -36,11 +39,12 @@ class UserController extends AbstractController
     }
 
     #[Route('/user/edit/{id}', name:'user.edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, EntityManagerInterface $entityManager, User $user): Response
+    public function edit(Request $request, EntityManagerInterface $entityManager): Response
     {
         if (!$this->getUser()){
             return $this->redirectToRoute('security.login');
         }
+        $user = $this->getUser();
         $form = $this->createForm(EditUserType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
@@ -50,15 +54,17 @@ class UserController extends AbstractController
         }
         return $this->render('pages/user/edit.html.twig', [
             'form' => $form->createView(),
+            'user' => $user
         ]);
     }
 
     #[Route('user/edit/photos/{id}', name: 'user.edit.photos', methods: ['GET', 'POST']) ]
-    public function editPhotos(Request $request, EntityManagerInterface $entityManager, User $user, SluggerInterface $slugger): Response
+    public function editPhotos(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         if (!$this->getUser()){
             return $this->redirectToRoute('security.login');
         }
+        $user = $this->getUser();
         $form = $this->createForm(EditUserPhotosType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
@@ -126,15 +132,25 @@ class UserController extends AbstractController
     }
 
     #[Route('user/update/preferences/{id}', name: 'user.update.preferences', methods: ['GET', 'POST'])]
-    public function updatePreferences(Request $request, EntityManagerInterface $manager, User $user){
+    public function updatePreferences(Request $request, EntityManagerInterface $manager){
         if (!$this->getUser()){
             return $this->redirectToRoute('security.login');
         }
+        $user = $this->getUser();
         $preferences = $user->getPreferences() ? $user->getPreferences() : new Preferences();
         $form = $this->createForm(PreferenceType::class, $preferences);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            $preferences = $form->getData();
+            $preferences->setUser($user);
+            $manager->persist($preferences);
+            $manager->flush();
+            return $this->redirectToRoute('search.search', parameters: ['id' => $user->getId()]);
+        }
         return $this->render('pages/user/preferences.html.twig',
         [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'user' => $user
         ]);
     }
 }
