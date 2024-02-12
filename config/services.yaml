@@ -32,6 +32,11 @@ services:
     App\Service\TokenGeneratorService:
         autowire: true
 
+    App\Service\WebSocketService:
+        shared: true
+        arguments:
+            $manager: '@doctrine.orm.entity_manager'
+
 
     App\Service\AuthenticationSuccessHandler:
         arguments: [ '@router' ]

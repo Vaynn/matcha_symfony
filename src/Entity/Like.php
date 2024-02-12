@@ -22,7 +22,7 @@ class Like
     #[ORM\JoinColumn(nullable: false)]
     private ?User $isLiked = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $likedAt = null;
 
     public function getId(): ?int
@@ -61,7 +61,7 @@ class Like
 
     public function setLikedAt(\DateTimeImmutable $likedAt): static
     {
-        $this->likeAt = $likedAt;
+        $this->likedAt = $likedAt;
 
         return $this;
     }

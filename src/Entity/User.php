@@ -104,6 +104,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Preferences $preferences = null;
 
+    #[ORM\Column]
+    private ?bool $haveNewNotif = false;
+
 
 
     public function __construct()
@@ -473,6 +476,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $this->preferences = $preferences;
+
+        return $this;
+    }
+
+    public function getHaveNewNotif(): ?bool
+    {
+        return $this->haveNewNotif;
+    }
+
+    public function setHaveNewNotif(bool $haveNewNotif): static
+    {
+        $this->haveNewNotif = $haveNewNotif;
 
         return $this;
     }

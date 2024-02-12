@@ -47,6 +47,7 @@ class UserFixture extends Fixture implements DependentFixtureInterface
                 ->setFameRating(mt_rand(0, 5))
                 ->setRoles(['ROLE_USER'])
                 ->setAge(mt_rand(18, 99))
+                ->setHaveNewNotif(false)
                 ->setPlainPassword('password');
             $image = new Image();
             $image->setName($user->getGender()->getName() === "Male" ? "male/" . rand(0, 38) . '.png' : "female/" . rand(0, 35) . '.png')

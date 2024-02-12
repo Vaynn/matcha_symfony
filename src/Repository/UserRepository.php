@@ -66,11 +66,13 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         else
             $sexualities = $preferences->getSexualities()->toArray();
         $qb = $this->createQueryBuilder('u')
-            ->where('u.age >= :min_age')
+            ->where('u.id != :currentUserId')
+            ->andwhere('u.age >= :min_age')
             ->andWhere('u.age <= :max_age')
             ->andWhere('u.gender IN (:genders)')
             ->andWhere('u.sexuality IN (:sexualities)')
             ->setParameters([
+                'currentUserId' => $preferences->getUser()->getId(),
                 'min_age' => $preferences->getMinAge(),
                 'max_age'=> $preferences->getMaxAge(),
                 'genders'=> $genders,

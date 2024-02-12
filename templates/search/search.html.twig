@@ -41,12 +41,26 @@
                                         </div>
                                     {% endif %}
                                 {% endfor %}
-                                {% set routeName = 'user.show' %}
+                                {% set routeName = 'profil' %}
                                 {% set routeUrl = path(routeName, {'id' : match.id()}) %}
                                 <div class="btn-group-sm d-flex justify-content-center" role="group" aria-label="Basic example">
-                                    <a href="{{ routeUrl }}"><button type="button" class="btn btn-outline-light btn-sm">Visit Profile</button></a>
-                                    <button type="button" class="btn btn-outline-light"><i class="fa-regular fa-comments"></i></button>
-                                    <button type="button" class="btn btn-outline-light"><i class="fa-solid fa-bolt"></i></button>
+                                    <a href="{{ routeUrl }}">
+                                        <button type="button" class="btn btn-outline-light btn-sm">Visit Profile</button>
+                                    </a>
+                                    <button type="button" class="btn btn-outline-light">
+                                        <i class="fa-regular fa-comments"></i>
+                                    </button>
+                                    {% macro isMatched(likes, match) %}
+                                        {% for like in likes %}
+                                            {% if like.isLiked == match %}
+                                                {{ 'matchaRose' }}
+                                            {% endif %}
+                                        {% endfor %}
+                                        {{ '' }}
+                                    {% endmacro %}
+                                    <button type="button" class="btn btn-outline-light crush-button" data-user-id="{{ match.id }}">
+                                        <i class="fa-solid fa-bolt {{ _self.isMatched(user.likes, match) }}"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -57,4 +71,5 @@
             {{ knp_pagination_render(matches) }}
         </div>
     </div>
+    <script src="{{ asset('js/websocket.js') }}" data-user-id="{{ user.username }}"></script>
 {% endblock %}

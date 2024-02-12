@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Form\EditUserPhotosType;
 use App\Form\EditUserType;
 use App\Form\PreferenceType;
+use App\Service\WebSocketService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
@@ -21,20 +22,24 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class UserController extends AbstractController
 {
     #[Route('/user/show/{id}', name: 'user.show', methods: ['GET'])]
-    public function show(User $user): Response
+    public function show(WebSocketService $socket): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('security.login');
         }
-        if($this->getUser() !== $user){
-            return $this->render('pages/user/show.others.html.twig', [
-                'controller_name' => 'UserController',
-                'user' => $user
-            ]);
-        }
         return $this->render('pages/user/show.html.twig', [
             'controller_name' => 'UserController',
             'user' => $this->getUser()
+        ]);
+    }
+    #[Route('/profil/{id}', name: 'profil', methods: ['GET'])]
+    public function show_profil(User $user): Response{
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('security.login');
+        }
+        return $this->render('pages/user/show.others.html.twig', [
+            'controller_name' => 'UserController',
+            'user' => $user
         ]);
     }
 

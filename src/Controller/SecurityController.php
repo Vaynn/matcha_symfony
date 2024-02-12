@@ -105,7 +105,8 @@ class SecurityController extends AbstractController
 
 
     #[Route('/logout', name:'security.logout')]
-    public function logout(){}
+    public function logout(){
+    }
 
     /**
      * This function displays a form that requests the username in case of a forgotten password and sends an email

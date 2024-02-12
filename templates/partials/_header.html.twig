@@ -7,14 +7,24 @@
         <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#" ><i class="fa-solid fa-puzzle-piece"> Explore</i>
+                    {% set routeName = 'search.search' %}
+                    {% set routeUrl = path(routeName, {'id' : app.user.id}) %}
+                    <a class="nav-link active" href="{{ routeUrl }}" ><i class="fa-solid fa-puzzle-piece"> Explore</i>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#"><i class="fa-regular fa-comments"></i> Chat</a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" href="#"><i class="fa-solid fa-bolt"></i> Crush</a>
+                    <a class="nav-link" id="crushMenu" href="{{ path('crush') }}">
+                        {% if app.user.haveNewNotif %}
+                            <i class="fa-solid fa-bolt yellow-icon" id="crush_icon"></i>
+                        {% else %}
+                        <i class="fa-solid fa-bolt" id="crush_icon"></i>
+                        {% endif %}
+                        Crush</a>
+
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
@@ -22,13 +32,13 @@
                     </a>
                     <div class="dropdown-menu">
                         {% set routeName = 'user.edit' %}
-                        {% set routeUrl = path(routeName, {'id' : user.id}) %}
+                        {% set routeUrl = path(routeName, {'id' : app.user.id}) %}
                         <a class="dropdown-item" href="{{ routeUrl }}"><i class="fa-regular fa-pen-to-square"></i> Edit Profile</a>
                         {% set routeName = 'user.edit.photos' %}
-                        {% set routeUrl = path(routeName, {'id' : user.id}) %}
+                        {% set routeUrl = path(routeName, {'id' : app.user.id}) %}
                         <a class="dropdown-item" href="{{ routeUrl }}"><i class="fa-solid fa-camera-retro"></i> Manage Photos</a>
                         {% set routeName = 'user.update.preferences' %}
-                        {% set routeUrl = path(routeName, {'id' : user.id}) %}
+                        {% set routeUrl = path(routeName, {'id' : app.user.id}) %}
                         <a class="dropdown-item" href="{{ routeUrl }}"><i class="fa-solid fa-heart-pulse"></i> Love Filters</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ path('security.logout') }}"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>

@@ -24,6 +24,11 @@ security:
             logout:
                 path: security.logout
                 enable_csrf: true
+        websocket:
+            pattern: ^/ws
+            security: false
+
+
 
 
             # activate different ways to authenticate
