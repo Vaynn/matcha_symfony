@@ -65,7 +65,7 @@
                                         {% endfor %}
                                         {{ '' }}
                                     {% endmacro %}
-                                    <button type="button" class="btn btn-outline-light crush-button" data-user-id="{{ interess.likedBy.id }}">
+                                    <button type="button" class="btn btn-outline-light crush-button interested" data-user-id="{{ interess.likedBy.id }}">
                                         <i class="fa-solid fa-bolt {{ _self.isMatched(favorites, interess.likedBy) }}"></i>
                                     </button>
 
@@ -84,9 +84,9 @@
                 It's your personal space to review your favorites and potentially make meaningful connections.
             </p>
             <hr>
-            <div class="row">
+            <div class="row crush-page-row" id="crushPageRow">
                 {% if not favorites %}
-                    <div class="card text-white bg-danger mb-3" style="max-width: 20rem;">
+                    <div class="card text-white bg-danger mb-3 no-favorites" style="max-width: 20rem;">
                         <div class="card-header">Stay Hopeful.</div>
                         <div class="card-body">
                             <p class="card-text">

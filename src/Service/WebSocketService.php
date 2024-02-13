@@ -6,19 +6,21 @@ use Doctrine\ORM\EntityManagerInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 use SplObjectStorage;
+use Symfony\Component\Asset\Packages;
 
 
 class WebSocketService implements MessageComponentInterface {
     protected $connections;
 
     private $manager;
+    private $assets;
 
-    public function __construct(EntityManagerInterface $manager)
+    public function __construct(EntityManagerInterface $manager, Packages $assets)
     {
 
         $this->connections = new SplObjectStorage();
         $this->manager = $manager;
-
+        $this->assets = $assets;
     }
 
     function onOpen(ConnectionInterface $conn)
@@ -51,7 +53,7 @@ class WebSocketService implements MessageComponentInterface {
                 if ($message->status === 'disliked'){
                     $this->dislike($from, $message->crushId, $message->userId);
                 } elseif ($message->status === 'liked'){
-                    $this->like($from, $message->crushId, $message->userId);
+                    $this->like($from, $message->crushId, $message->userId, $message->addFavoriteRow);
                 }
                 break;
         }
@@ -69,7 +71,7 @@ class WebSocketService implements MessageComponentInterface {
         $this->manager->flush();
     }
 
-    private function like(ConnectionInterface $from, $crushId, $userId){
+    private function like(ConnectionInterface $from, $crushId, $userId, $addFavoriteRow){
         echo(' like ');
         $crush = $this->manager->getRepository(User::class)->findOneBy(['id' => $crushId]);
         echo(' crush ' . $crush->getUsername());
@@ -90,6 +92,25 @@ class WebSocketService implements MessageComponentInterface {
                 $connection->send(json_encode($msg));
             }
         }
+        if ($addFavoriteRow){
+            echo(' addFavorite ');
+            $profilImage = null;
+            foreach ($crush->getImages() as $image){
+                if ($image->getIsProfileImage()){
+                    $profilImage = $image;
+                }
+            }
+            $path = $this->assets->getUrl('images/users/' . $profilImage->getName());
+            $favorite = ['type' => 'addFavoriteRow',
+                'name' => $crush->getUsername(),
+                'id' => $crush->getId(),
+                'age' => $crush->getAge(),
+                'imageName' => $profilImage ? $profilImage->getName() : null,
+                'imagePath' => $profilImage ? $path : null
+            ];
+            $from->send(json_encode($favorite));
+        }
+
 
     }
 

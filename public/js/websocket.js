@@ -34,10 +34,33 @@
                 crushIcon.classList.add('yellow-icon')
             }
         }
+        if (data['type'] && data['type'] === 'addFavoriteRow'){
+            const favoriteRow = document.getElementById('crushPageRow');
+            const newProfile = document.createElement('div');
+            newProfile.classList.add('col-md-4', 'crush-page-' + data['id']);
+            newProfile.innerHTML = `
+                               <div class="card border-primary mb-3" style="max-width: 20rem;">
+                            <div class="card-header">${data['name']} - ${data['age']} yo</div>
+                            <div class="card-body">
+                                        <div class="card-body d-flex justify-content-center align-items-center">
+                                            <img class="img-fluid" alt="${ data['imageName']}" style="height: 200px;" src="${data['imagePath']}">
+                                        </div>            
+                                <div class="btn-group-sm d-flex justify-content-center" role="group" aria-label="Basic example">
+                                    <a href="/profil/${data['id']}">
+                                        <button type="button" class="btn btn-outline-light btn-sm">Visit Profile</button>
+                                    </a>
+                                    <button type="button" class="btn btn-outline-light">
+                                        <i class="fa-regular fa-comments"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-light crush-button" data-user-id="${data['id']}">
+                                        <i class="fa-solid fa-bolt matchaRose"></i>
+                                    </button>
 
-
-        // Ajoutez ici le code pour mettre à jour l'interface utilisateur en fonction des données reçues
-        // par exemple, modifier la classe de l'icône en fonction de 'status'
+                                </div>
+                            </div>
+                        </div>`;
+            favoriteRow.appendChild(newProfile);
+        }
     });
 
     crushButtons.forEach(button => {
@@ -48,7 +71,7 @@
             if (icon.classList.contains('matchaRose')) {
                 const message = {
                     type: 'updateCrushStatus',
-                    crushId : crushId,
+                    crushId: crushId,
                     userId: userId,
                     status: 'disliked',
                 };
@@ -56,7 +79,7 @@
                 console.log(JSON.stringify(message));
                 socket.send(JSON.stringify(message));
                 const favorite = document.querySelector('.crush-page-' + crushId);
-                if (favorite){
+                if (favorite) {
                     favorite.remove();
                 }
             } else {
@@ -65,9 +88,23 @@
                     crushId: crushId,
                     userId: userId,
                     status: 'liked',
+                    addFavoriteRow: false,
                 };
+                if (button.classList.contains('interested')) {
+                    console.log('interested');
+                    if (document.querySelector('.no-favorites')) {
+                        console.log('no-favorite');
+                        document.querySelector('.no-favorites').remove();
+                    }
+                    const favoriteRow = document.getElementById('crushPageRow');
+                    console.log(favoriteRow);
+                    if (favoriteRow) {
+                        console.log("new row");
+                        message['addFavoriteRow'] = true;
+                    }
+                }
                 icon.classList.add('matchaRose');
                 socket.send(JSON.stringify(message));
             }
-        });
+        })
     });
